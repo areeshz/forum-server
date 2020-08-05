@@ -12,6 +12,7 @@ from ..models.user import User
 class SignUp(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
+    serializer_class = UserSerializer
     def post(self, request):
         user = UserSerializer(data=request.data['credentials'])
         if user.is_valid():

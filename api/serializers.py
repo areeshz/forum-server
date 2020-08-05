@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from .models.mango import Mango
 from .models.user import User
+from .models.post import Post
 
 
 class MangoSerializer(serializers.ModelSerializer):
@@ -27,3 +28,19 @@ class ChangePasswordSerializer(serializers.Serializer):
     model = User
     old = serializers.CharField(required=True)
     new = serializers.CharField(required=True)
+
+class UserSerializerView(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ('id', 'email')
+
+class PostSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Post
+    fields = ('id', 'title', 'body', 'owner')
+
+class PostSerializerView(serializers.ModelSerializer):
+    owner = UserSerializerView(read_only=True)
+    class Meta:
+      model = Post
+      fields = '__all__'
