@@ -47,7 +47,7 @@ class MangoDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         """Delete request"""
         mango = get_object_or_404(Mango, pk=pk)
-        if not request.user.id == mango['owner']:
+        if not request.user.id == mango.owner.id:
             raise PermissionDenied('Unauthorized, you do not own this mango')
         mango.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -61,7 +61,7 @@ class MangoDetail(generics.RetrieveUpdateDestroyAPIView):
         # Locate Mango
         mango = get_object_or_404(Mango, pk=pk)
         # Check if user is  the same
-        if not request.user.id == mango['owner']:
+        if not request.user.id == mango.owner.id:
             raise PermissionDenied('Unauthorized, you do not own this mango')
 
         # Add owner to data object now that we know this user owns the resource

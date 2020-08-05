@@ -11,10 +11,9 @@ from ..models.post import Post
 from ..serializers import PostSerializer, PostSerializerView, UserSerializer
 
 # Create 'Post' views
-class PostsIndex(generics.ListCreateAPIView):
+class PostsIndex(generics.ListAPIView):
   authentication_classes = ()
   permission_classes = ()
-  serializer_class = PostSerializer
   queryset = Post.objects.all()
 
   def get(self, request):
@@ -39,3 +38,49 @@ class PostsCreate(generics.ListCreateAPIView):
       return Response(post.data, status=status.HTTP_201_CREATED)
     else:
       return Response(post.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostsShow(generics.ListAPIView):
+  authentication_classes = ()
+  permission_classes = ()
+
+  def get(self, request, pk):
+    """Show Request"""
+    post = get_object_or_404(Post, pk=pk)
+    data = PostSerializerView(post).data
+    return Response(data)
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+  permission_classes=(IsAuthenticated,)
+  queryset = Post.objects.all()
+  serializer_class = PostSerializer
+  def partial_update(self, request, pk):
+    """Update Request"""
+    # Remove owner from request object
+    if request.data['post'].get('owner', False):
+      del request.data['post']['owner']
+
+    # Locate Post
+    post = get_object_or_404(Post, pk=pk)
+    # Check if user is the same
+    if not request.user.id == post.owner.id:
+      raise PermissionDenied('Unauthorized, you do not own this post')
+
+    # Add owner to data object now that we know this user owns the resource
+    request.data['post']['owner'] = request.user.id
+    # Validate updates with serializer
+    new_post = PostSerializer(post, data=request.data['post'])
+    if new_post.is_valid():
+      new_post.save()
+      return Response(new_post.data)
+    return Response(new_post.errors, status=status.HTTP_400_BAD_REQUEST)
+
+  def delete(self, request, pk):
+    """Delete Request"""
+    # Locate the post
+    post = get_object_or_404(Post, pk=pk)
+    print('reqid', request.user.id, 'postid', post.owner.id, 'not owner?', not request.user.id == post.owner.id)
+    if not request.user.id == post.owner.id:
+      raise PermissionDenied('Unauthorized, you do not own this post')
+    else:
+      post.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

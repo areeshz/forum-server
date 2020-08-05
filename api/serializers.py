@@ -37,7 +37,8 @@ class UserSerializerView(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
   class Meta:
     model = Post
-    fields = ('id', 'title', 'body', 'owner')
+    # fields = ('id', 'title', 'body', 'owner')
+    fields = '__all__'
 
 class PostSerializerView(serializers.ModelSerializer):
     owner = UserSerializerView(read_only=True)

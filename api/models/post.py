@@ -7,6 +7,8 @@ class Post(models.Model):
   """Defines the 'post' model"""
   title = models.CharField(max_length=300)
   body = models.CharField(max_length=5000)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
   owner = models.ForeignKey(
     'User',
     on_delete=models.CASCADE
