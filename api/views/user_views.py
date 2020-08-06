@@ -36,9 +36,11 @@ class SignIn(generics.CreateAPIView):
             if user.is_active:
                 login(request, user)
                 return Response({
-                    'id': user.id,
-                    'email': user.email,
-                    'token': user.get_auth_token(user)
+                'user': {
+                  'id': user.id,
+                  'email': user.email,
+                  'token': user.get_auth_token(user)
+                }
                 })
             else:
                 return Response({ 'msg': 'The account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -63,6 +65,7 @@ class ChangePassword(generics.UpdateAPIView):
         if serializer.is_valid():
             print(serializer)
             if not user.check_password(serializer.data['old']):
+                print('nope, serizlizer.data(old) is', serializer.data['old'])
                 return Response({ 'msg': 'Wrong password'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
             # set_password will also hash the password
             user.set_password(serializer.data['new'])
