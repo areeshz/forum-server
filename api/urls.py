@@ -2,6 +2,7 @@ from django.urls import path
 from .views.mango_views import Mangos, MangoDetail
 from .views.user_views import SignUp, SignIn, SignOut, ChangePassword
 from .views.post_views import PostsIndex, PostsCreate, PostsShow, PostDetail
+from .views.comment_views import Comments, CommentDetail
 
 urlpatterns = [
 	# Restful routing
@@ -14,5 +15,7 @@ urlpatterns = [
     path('feed/', PostsIndex.as_view(), name='posts-index'),
     path('posts/', PostsCreate.as_view(), name='posts-create'),
     path('feed/<int:pk>', PostsShow.as_view(), name='posts-show'),
-    path('posts/<int:pk>', PostDetail.as_view(), name='posts-show')
+    path('posts/<int:pk>', PostDetail.as_view(), name='posts-show'),
+    path('comments/', Comments.as_view(), name='comments'),
+    path('comments/<int:pk>', CommentDetail.as_view(), name='comment-detail')
 ]
