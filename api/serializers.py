@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models.mango import Mango
 from .models.user import User
 from .models.post import Post
+from .models.comment import Comment
 
 
 class MangoSerializer(serializers.ModelSerializer):
@@ -45,3 +46,15 @@ class PostSerializerView(serializers.ModelSerializer):
     class Meta:
       model = Post
       fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Comment
+    fields = '__all__'
+
+class CommentSerializerView(serializers.ModelSerializer):
+  owner = UserSerializerView(read_only=True)
+  post = PostSerializerView(read_only=True)
+  class Meta:
+    model = Comment
+    fields = '__all__'
