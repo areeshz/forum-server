@@ -68,7 +68,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     # Add owner to data object now that we know this user owns the resource
     request.data['post']['owner'] = request.user.id
     # Validate updates with serializer
-    new_post = PostSerializer(post, data=request.data['post'])
+    new_post = PostSerializerView(post, data=request.data['post'])
     if new_post.is_valid():
       new_post.save()
       return Response(new_post.data)
