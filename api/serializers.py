@@ -41,12 +41,6 @@ class PostSerializer(serializers.ModelSerializer):
     # fields = ('id', 'title', 'body', 'owner')
     fields = '__all__'
 
-class PostSerializerView(serializers.ModelSerializer):
-    owner = UserSerializerView(read_only=True)
-    class Meta:
-      model = Post
-      fields = '__all__'
-
 class CommentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Comment
@@ -54,7 +48,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class CommentSerializerView(serializers.ModelSerializer):
   owner = UserSerializerView(read_only=True)
-  post = PostSerializerView(read_only=True)
+  # post = PostSerializerView(read_only=True)
   class Meta:
     model = Comment
     fields = '__all__'
+
+class PostSerializerView(serializers.ModelSerializer):
+    owner = UserSerializerView(read_only=True)
+    comments = CommentSerializerView(many=True, read_only=True)
+    class Meta:
+      model = Post
+      # fields = '__all__'
+      fields = ('id', 'owner', 'title', 'body', 'created_at', 'updated_at', 'comments')

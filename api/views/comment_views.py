@@ -36,9 +36,10 @@ class Comments(APIView):
     else:
       return Response(comment.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CommentDetail(APIView):
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
   permission_classes=(IsAuthenticated,)
   serializer_class = CommentSerializer
+  queryset = Comment.objects.all()
   def partial_update(self, request, pk):
     """Update Request"""
     # Remove owner from request object
@@ -58,15 +59,16 @@ class CommentDetail(APIView):
     if new_comment.is_valid():
       new_comment.save()
       return Response(new_comment.data)
-    return Response(new_comment.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+      return Response(new_comment.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-      """Delete Request"""
-      # Locate the comment
-      comment = get_object_or_404(Comment, pk=pk)
-      print('reqid', request.user.id, 'commentid', comment.owner.id, 'not owner?', not request.user.id == comment.owner.id)
-      if not request.user.id == comment.owner.id:
-        raise PermissionDenied('Unauthorized, you do not own this comment')
-      else:
-        comment.delete()
-      return Response(status=status.HTTP_204_NO_CONTENT)
+  def delete(self, request, pk):
+    """Delete Request"""
+    # Locate the comment
+    comment = get_object_or_404(Comment, pk=pk)
+    print('reqid', request.user.id, 'commentid', comment.owner.id, 'not owner?', not request.user.id == comment.owner.id)
+    if not request.user.id == comment.owner.id:
+      raise PermissionDenied('Unauthorized, you do not own this comment')
+    else:
+      comment.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
