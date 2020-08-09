@@ -14,6 +14,29 @@ class Post(models.Model):
     on_delete=models.CASCADE
   )
 
+  GENERAL = 'General'
+  SPORTS = 'Sports'
+  CURRENT_EVENTS = 'Current Events'
+  ADVICE = 'Advice'
+  PETS = 'Pets'
+  BOOKS = 'Books'
+  MOVIE_TV = 'Movies / TV'
+  TOPIC_CHOICES = [
+    (GENERAL, 'General'),
+    (SPORTS, 'Sports'),
+    (CURRENT_EVENTS, 'Current Events'),
+    (ADVICE, 'Advice'),
+    (PETS, 'Pets'),
+    (BOOKS, 'Books'),
+    (MOVIE_TV, 'Movies / TV')
+  ]
+
+  topic = models.CharField(
+    max_length=25,
+    choices=TOPIC_CHOICES,
+    default=GENERAL
+  )
+
   def __str__(self):
     return f"Post titled: {self.title}"
 
