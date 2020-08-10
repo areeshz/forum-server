@@ -18,7 +18,12 @@ class PostsIndex(generics.ListAPIView):
 
   def get(self, request):
     """Index Request"""
-    posts = Post.objects.all()
+    topic = request.query_params.get('topic', None)
+    print('topic is', topic)
+    if topic is not None:
+      posts = Post.objects.filter(topic=topic)
+    else:
+      posts = Post.objects.all()
     data = PostSerializerView(posts, many=True).data
     return Response(data)
 
