@@ -22,7 +22,14 @@ class Likes(APIView):
     request.data['like']['user_id'] = request.user.id
     like = request.data['like']
     new_like = LikeSerializer(data=like)
-    if new_like.is_valid():
+    # Check if a like exists already between this user and post
+    current_like = Like.objects.filter(user_id=request.user.id, post_id=request.data['like']['post_id'])
+    current_like_data = LikeSerializer(current_like, many=True).data
+    print(current_like_data)
+    print(not current_like_data)
+    # return Response(status=status.HTTP_204_NO_CONTENT)
+    # if the new like is valid and there are no existing likes between this user and post, save the new like
+    if (new_like.is_valid() and not current_like_data):
       new_like.save()
       return Response(new_like.data, status=status.HTTP_201_CREATED)
     else:
