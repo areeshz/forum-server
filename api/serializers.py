@@ -4,7 +4,7 @@ from rest_framework import serializers
 from .models.user import User
 from .models.post import Post
 from .models.comment import Comment
-
+from .models.like import Like
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,7 +50,13 @@ class CommentSerializerView(serializers.ModelSerializer):
 class PostSerializerView(serializers.ModelSerializer):
     owner = UserSerializerView(read_only=True)
     comments = CommentSerializerView(many=True, read_only=True)
+    liked_users = UserSerializerView(many=True, read_only=True)
     class Meta:
       model = Post
       # fields = '__all__'
-      fields = ('id', 'owner', 'topic', 'title', 'body', 'created_at', 'updated_at', 'comments')
+      fields = ('id', 'owner', 'topic', 'title', 'body', 'created_at', 'updated_at', 'comments', 'liked_users')
+
+class LikeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Like
+    fields = '__all__'

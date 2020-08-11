@@ -14,6 +14,13 @@ class Post(models.Model):
     on_delete=models.CASCADE
   )
 
+  liked_users = models.ManyToManyField(
+  'User',
+  through = 'Like',
+  through_fields=('post_id', 'user_id'),
+  related_name = 'likes'
+  )
+
   GENERAL = 'General'
   SPORTS = 'Sports'
   CURRENT_EVENTS = 'Current Events'
