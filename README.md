@@ -35,6 +35,11 @@ Forum Server is a back-end API created with Django that utilized PostgreSQL to s
 | POST   | `/comments/`              | `comments#create` |
 | PATCH  | `/comments/:id`           | `comments#update` |
 | DELETE | `/comments/:id`           | `comments#destroy`|
+| GET    | `/likes`                  | `likes#index`     |
+| POST   | `/likes/`                 | `likes#create`    |
+| DELETE | `/likes/`                 | `likes#destroy`   |
+| GET    | `/likes/:id`              | `likes#show`      |
+
 
 ## Planning and Execution
 Development of this server came in several iterations, each adding another feature for the Let's Talk forum client application to utilize. After development of the ERD, models and views were created for the 'Post' resource. Next, models and views were created for the 'Comment' resource. Last was the 'Like' resource, which created a many-to-many relationship between users and posts.
