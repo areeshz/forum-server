@@ -24,11 +24,10 @@ class Comments(APIView):
   serializer_class = CommentSerializer
   def post(self, request):
     """Create Comment"""
-    print(request.data)
     # Add user to request object
     request.data['comment']['owner'] = request.user.id
     # Serialize / create 'comment'
-    print(request.data['comment']) # Should have body, post, and owner defined at this point (body and post from request itself, owner from line above)
+    # Should have body, post, and owner defined at this point (body and post from request itself, owner from line above)
     comment = CommentSerializer(data=request.data['comment'])
     if comment.is_valid():
       comment.save()
@@ -66,7 +65,6 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """Delete Request"""
     # Locate the comment
     comment = get_object_or_404(Comment, pk=pk)
-    print('reqid', request.user.id, 'commentid', comment.owner.id, 'not owner?', not request.user.id == comment.owner.id)
     if not request.user.id == comment.owner.id:
       raise PermissionDenied('Unauthorized, you do not own this comment')
     else:

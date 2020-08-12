@@ -25,8 +25,6 @@ class Likes(APIView):
     # Check if a like exists already between this user and post
     current_like = Like.objects.filter(user_id=request.user.id, post_id=request.data['like']['post_id'])
     current_like_data = LikeSerializer(current_like, many=True).data
-    print(current_like_data)
-    print(not current_like_data)
     # return Response(status=status.HTTP_204_NO_CONTENT)
     # if the new like is valid and there are no existing likes between this user and post, save the new like
     if (new_like.is_valid() and not current_like_data):
@@ -40,7 +38,6 @@ class Likes(APIView):
     # Locate the like that corresponds to the user and the provided post id
     like = get_object_or_404(Like, user_id=request.user.id, post_id=request.data['post_id'])
     data = LikeSerializer(like).data
-    print('like', data)
     if not request.user.id == data['user_id']:
       raise PermissionDenied('Unauthorized, you have not \'liked\' this post.')
     else:

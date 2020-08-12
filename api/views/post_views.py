@@ -19,7 +19,6 @@ class PostsIndex(generics.ListAPIView):
   def get(self, request):
     """Index Request"""
     topic = request.query_params.get('topic', None)
-    print('topic is', topic)
     if topic is not None:
       posts = Post.objects.filter(topic=topic)
     else:
@@ -32,11 +31,9 @@ class PostsCreate(generics.ListCreateAPIView):
   serializer_class = PostSerializer
   def post(self, request):
     """Create request"""
-    print(request.data)
     # Add user to request object
     request.data['post']['owner'] = request.user.id
     # Serialize / create 'post'
-    print(request.data['post'])
     post = PostSerializer(data=request.data['post'])
     if post.is_valid():
       post.save()
@@ -83,7 +80,6 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     """Delete Request"""
     # Locate the post
     post = get_object_or_404(Post, pk=pk)
-    print('reqid', request.user.id, 'postid', post.owner.id, 'not owner?', not request.user.id == post.owner.id)
     if not request.user.id == post.owner.id:
       raise PermissionDenied('Unauthorized, you do not own this post')
     else:
